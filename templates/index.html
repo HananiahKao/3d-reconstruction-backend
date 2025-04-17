@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>3D Reconstruction Uploader</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <h1>Upload Video for 3D Reconstruction</h1>
+  <input type="file" id="videoInput" accept="video/*" />
+  <button onclick="uploadVideo()">Upload</button>
+  <p id="status"></p>
+  <a id="downloadLink" style="display:none;">Download 3D Model (USDZ)</a>
+
+  <script>
+    async function uploadVideo() {
+      const fileInput = document.getElementById("videoInput");
+      const status = document.getElementById("status");
+      const link = document.getElementById("downloadLink");
+
+      if (!fileInput.files[0]) {
+        status.innerText = "Please select a video.";
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("video", fileInput.files[0]);
+
+      status.innerText = "Uploading and processing...";
+      link.style.display = "none";
+
+      try {
+        const response = await fetch("/upload", {
+          method: "POST",
+          body: formData
+        });
+
+        if (!response.ok) throw new Error("Upload failed");
+
+        const result = await response.json();
+        link.href = result.download_url;
+        link.download = "model.usdz";
+        link.innerText = "Download your 3D model (USDZ)";
+        link.style.display = "block";
+        status.innerText = "Done!";
+      } catch (err) {
+        status.innerText = "An error occurred: " + err.message;
+      }
+    }
+  </script>
+</body>
+</html>
