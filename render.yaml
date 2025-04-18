@@ -3,7 +3,7 @@ services:
     name: 3d-reconstruction-app
     runtime: python
     buildCommand: chmod +x build.sh;./build.sh
-    startCommand: gunicorn app:app
+    startCommand: python3 -m gunicorn app:app
     plan: free
     region: oregon
     envVars:
