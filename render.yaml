@@ -2,9 +2,7 @@ services:
   - type: web
     name: 3d-reconstruction-app
     runtime: python
-    buildCommand: |
-      chmod +x build.sh
-      ./build.sh
+    buildCommand: chmod +x build.sh;./build.sh
     startCommand: gunicorn app:app
     plan: free
     region: oregon
